@@ -10,6 +10,21 @@ body {
   display: flex;
   justify-content: center;
   margin-inline: auto;
+  background-color: black;
+}
+
+.video-container.theater,
+.video-container.full-screen {
+  max-width: initial;
+  width: 100%;
+}
+
+.video-container.theater {
+  max-height: 90vh;
+}
+
+.video-container.full-screen {
+  max-height: 100vh;
 }
 
 video {
@@ -25,6 +40,17 @@ video {
   z-index: 100;
   opacity: 0;
   transition: opacity 150ms ease-in-out;
+}
+
+.video-controls-container::before{
+  content: " ";
+  position: absolute;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+  width: 100%;
+  aspect-ratio: 6/1;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .video-container:hover .video-controls-container, 
