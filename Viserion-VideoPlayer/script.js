@@ -1,4 +1,7 @@
 const playPauseBtn = document.querySelector(".play-pause-btn")
+const theaterBtn = document.querySelector(".theater-btn")
+const fullScreenBtn = document.querySelector(".full-screen-btn")
+const miniPlayerBtn = document.querySelector(".mini-player-btn")
 const videoContainer = document.querySelector(".video-container")
 const video = document.querySelector("video")
 
@@ -10,6 +13,9 @@ document.addEventListener("keydown", e => {
             togglePlay()
     }
 })
+
+// View Modes
+
 
 // Play/Pause
 playPauseBtn.addEventListener('click', togglePlay)
