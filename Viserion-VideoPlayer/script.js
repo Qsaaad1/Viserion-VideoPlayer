@@ -3,13 +3,13 @@ const theaterBtn = document.querySelector(".theater-btn")
 const fullScreenBtn = document.querySelector(".full-screen-btn")
 const miniPlayerBtn = document.querySelector(".mini-player-btn")
 const muteBtn = document.querySelector(".mute-btn")
+const speedBtn = document.querySelector(".speed-btn")
 const currentTimeElem = document.querySelector(".current-time")
 const totalTimeElem = document.querySelector(".total-time")
 const volumeSlider = document.querySelector(".volume-slider")
 const videoContainer = document.querySelector(".video-container")
+const timelineContainer = document.querySelector(".timeline-container")
 const video = document.querySelector("video")
-
-
 
 document.addEventListener("keydown", e => {
     switch (e.key.toLowerCase()) {
@@ -38,6 +38,63 @@ document.addEventListener("keydown", e => {
                                 break
     }
 })
+
+
+// Timeline
+
+timelineContainer.addEventListener("mousemove", handleTimelineUpdate)
+timelineContainer.addEventListener("mousedown", toggleScrubbing)
+document.addEventListener("mouseup", e => {
+  if (isScrubbing) toggleScrubbing(e)
+})
+document.addEventListener("mousemove", e => {
+  if (isScrubbing) handleTimelineUpdate(e)
+})
+
+let isScrubbing = false
+let wasPaused
+function toggleScrubbing(e) {
+  const rect = timelineContainer.getBoundingClientRect()
+  const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
+  isScrubbing = (e.buttons & 1) === 1
+  videoContainer.classList.toggle("scrubbing", isScrubbing)
+  if (isScrubbing) {
+    wasPaused = video.paused
+    video.pause()
+  } else {
+    video.currentTime = percent * video.duration
+    if (!wasPaused) video.play()
+  }
+
+  handleTimelineUpdate(e)
+}
+
+function handleTimelineUpdate(e) {
+  const rect = timelineContainer.getBoundingClientRect()
+  const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
+  const previewImgNumber = Math.max(
+    1,
+    Math.floor((percent * video.duration) / 10)
+  )
+  timelineContainer.style.setProperty("--preview-position", percent)
+
+  if (isScrubbing) {
+    e.preventDefault()
+    timelineContainer.style.setProperty("--progress-position", percent)
+  }
+}
+
+
+// Playback Speed
+
+speedBtn.addEventListener("click", changePlaybackSpeed)
+
+function changePlaybackSpeed() {
+  let newPlaybackRate = video.playbackRate + 0.25
+  if (newPlaybackRate > 2) newPlaybackRate = 0.25
+  video.playbackRate = newPlaybackRate
+  speedBtn.textContent = `${newPlaybackRate}x`
+}
 
 // Duration
 
